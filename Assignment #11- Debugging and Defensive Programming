@@ -1,0 +1,47 @@
+## Simple Tukey outlier helper (IQR rule)
+tukey.outlier <- function(v, k = 1.5) {
+  stopifnot(is.numeric(v))
+  qs  <- stats::quantile(v, c(0.25, 0.75), na.rm = TRUE)
+  iqr <- qs[2] - qs[1]
+  lo  <- qs[1] - k * iqr
+  hi  <- qs[2] + k * iqr
+  (v < lo) | (v > hi)
+}
+
+## Corrected version of tukey_multiple
+## Flags rows that are outliers in EVERY column
+corrected_tukey <- function(x) {
+  # accept numeric data.frame or matrix
+  if (is.data.frame(x)) {
+    if (!all(vapply(x, is.numeric, logical(1)))) {
+      stop("All columns must be numeric.")
+    }
+    x <- as.matrix(x)
+  }
+  if (!is.matrix(x) || !is.numeric(x)) stop("x must be a numeric matrix.")
+  
+  outliers <- array(TRUE, dim = dim(x))
+  for (j in seq_len(ncol(x))) {
+    # element-wise AND (fix was && -> &)
+    outliers[, j] <- outliers[, j] & tukey.outlier(x[, j])
+  }
+  
+  # if any NA slipped in, treat as not an outlier
+  outliers[is.na(outliers)] <- FALSE
+  
+  outlier.vec <- logical(nrow(x))
+  for (i in seq_len(nrow(x))) {
+    outlier.vec[i] <- all(outliers[i, ])
+  }
+  outlier.vec
+}
+
+## Quick check
+set.seed(123)
+test_mat <- matrix(rnorm(50), nrow = 10)
+corrected_tukey(test_mat)     # logical vector of length 10
+
+## Sanity: make one row extreme across all columns -> should be TRUE for that row
+bad <- test_mat
+bad[3, ] <- 10
+corrected_tukey(bad)
