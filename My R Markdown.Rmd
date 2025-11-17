@@ -1,0 +1,55 @@
+---
+title: "My R Markdown"
+author: "David Sanchez"
+date: "`r Sys.Date()`"
+output:
+  html_document: default
+  pdf_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Introduction
+
+R Markdown is a way to write documents that combine regular text, R code, and math in one file. When you knit the file, R runs the code, inserts the results, and outputs a clean report. This means the analysis and the explanation stay together, which makes it easier to update your work later without copying and pasting results.
+
+# What Is R Markdown?
+
+R Markdown uses a simple syntax for formatting. Headings are created with `#`, lists use `-` or `*`, and you can make text *italic* or **bold** with a few characters. Instead of clicking buttons like in Word, you type the formatting directly into the document. The nice part is that the same `.Rmd` file can be turned into HTML, PDF, or Word just by changing the output options and knitting again.
+
+# Narrative Text and Structure
+
+In a typical R Markdown report, I can explain what I am doing in plain language, then show the code and output right below that explanation. For example, I might describe a dataset, run a summary, and then talk about what the numbers mean. This feels more organized than having code in one place and a separate write-up somewhere else. It also helps keep a record of the steps I took so I can remember my process in the future.
+
+# Math with LaTeX
+
+R Markdown also supports LaTeX math, which is useful when I need to write formulas or show a little bit of notation.
+
+I can use inline math inside a sentence, like this: $ \alpha + \beta = \gamma $.
+
+I can also write a displayed equation on its own line. For example, the quadratic formula can be written as:
+
+$$
+x = \frac{-b \pm \sqrt{b^2 - 4ac}}{2a}
+$$
+
+Having math built into the document is helpful when I need to explain models, statistics, or any calculations more clearly.
+
+# Data and Code Chunks
+
+Next, I can add R code chunks. These chunks are executed when the document is knit, and the results appear right under the code.
+
+## Loading a Dataset and Running a Summary
+
+```{r data-summary}
+# Use a built-in data set called 'mtcars'
+data(mtcars)
+
+# Look at basic summary information for miles per gallon
+summary(mtcars$mpg)
+
+# Calculate the mean miles per gallon
+mean(mtcars$mpg)
+
